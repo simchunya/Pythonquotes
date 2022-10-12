@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Python Quotes</title>
+{% endblock %}
+
+{% block body %}
+<div class = "content">
+    <h1> Python Quotes</h1>
+    {% if quotes|length < 1 %}
+    <h4> There are no quotes to show. Create one below!</h4>
+    {% else %}
+
+    <table class="table table-hover" :hover {
+        background-color: #000000; 
+    }>
+        <thead class="text-light"> 
+            <tr>
+                <th>Quote</th>
+                <th>Added</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        {% for quote in quotes %}
+        <tbody class="text-light"> 
+            <tr>
+                <td>{{ quote.content }}</td>
+                <td>{{ quote.date_created.date() }}</td>
+                <td>
+                    <a href="/delete/{{quote.id}}">Delete</a>
+                    <br>
+                    <a href="/update/{{quote.id}}">Update</a>
+                </td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <form action="/" method="POST">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" name="content" id="content" placeholder="Biggus Dickus" rows="5">
+            <label for="content">Enter your favourite Monty Python Quote</label>
+            
+        </div>
+        
+        <input type="submit" value="Add Quote">
+        
+
+
+
+    </form>
+</div>
+{% endblock %}
