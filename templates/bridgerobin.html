@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+body{
+
+background: url(https://th.bing.com/th/id/R.66a210f6ec64daf59caa54c81022a91f?rik=YOME1orhFG2l%2bA&riu=http%3a%2f%2fimg3.wikia.nocookie.net%2f__cb20130716234625%2fmontypython%2fimages%2fc%2fc1%2fBridge_of_Death_monty_python_and_the_holy_grail_591679_800_4411271399897.jpg&ehk=k%2fMH6rL%2fY2xbi8F3uxdGHLNJhBZmyyr2IML7uZmotGo%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1);
+color: rgb(233, 247, 37);
+</style>
+
+<title>Bridge of Death</title>
+
+
+{% endblock %}
+
+{% block body %}
+
+<form class="form-horizontal">
+    <div class="form-group">
+        {{ form.username.label }}
+        {{ form.username(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.quest.label }}
+        {{ form.quest(class="form-control") }}
+    </div>
+
+    <H1> What is the capital of Assyria?</H1>
+    <div class="form-group">
+            <a href="{{ url_for('gorgeofeternalperil') }}"><button type="button" class="btn btn-light">What? I don't know that!</button></a>
+    </div>
+</button>
+        
+    </div>
+</form>
+
+{% endblock %}

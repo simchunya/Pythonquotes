@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Bridge of Death</title>
+
+
+{% endblock %}
+
+{% block body %}
+<style>
+    body{
+    text-align: center;
+    background: url(https://th.bing.com/th/id/R.66a210f6ec64daf59caa54c81022a91f?rik=YOME1orhFG2l%2bA&riu=http%3a%2f%2fimg3.wikia.nocookie.net%2f__cb20130716234625%2fmontypython%2fimages%2fc%2fc1%2fBridge_of_Death_monty_python_and_the_holy_grail_591679_800_4411271399897.jpg&ehk=k%2fMH6rL%2fY2xbi8F3uxdGHLNJhBZmyyr2IML7uZmotGo%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1);
+    color: rgb(233, 247, 37);
+    
+</style>
+
+
+<script>
+    var sites = [
+        '/bridge',
+        '/bridgerobin',
+        '/bridgearthur'
+        
+    ];
+
+    function randomSite() {
+        var i = parseInt(Math.random() * sites.length);
+        location.href = sites[i];
+    }
+</script>
+
+<img src="https://th.bing.com/th/id/R.b8b8dda7cdda21ba48281a47cf3fb9d8?rik=8ZcxKyZ600xj5A&riu=http%3a%2f%2fwww.dailyllama.com%2fnews%2f2003%2fimages%2fbridgekeeper.jpg&ehk=pndTUuv6cvHvJKJsN9aNJJ39Vxki2JCGFo8qQxUTVA8%3d&risl=&pid=ImgRaw&r=0" 
+width="auto" height="125"/>
+<H1>KEEPER</H1>
+<H1>Stop! Who would cross the Bridge of Death must answer me these questions three, ere the other side he see.</H1>
+<a href="#" onclick="randomSite();"><button type="button" class="btn btn-light">Ask me the questions, bridge-keeper. I'm not afraid.</button></a>
+</button>
+
+{% endblock %}
