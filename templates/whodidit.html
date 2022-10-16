@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Bridge of Death</title>
+
+
+{% endblock %}
+
+{% block body %}
+<style>
+    body{
+    text-align: center;
+    background: url(https://i.imgflip.com/3tobnr.png);
+    background-size: cover;
+    color: rgb(14, 253, 6);
+    
+</style>
+
+<img src="https://archive.org/download/montypythonstoning_201910/montypythonstoning_201910.thumbs/Monty%20Python%20-%20Stoning_000030.jpg" 
+width="auto" height="125"/>
+<H1>Official</H1>
+<H1>(suspiciously) Are there any women here today?</H1>
+<a href="{{ url_for('index') }}"><button type="button" class="btn btn-light">No no, no women here.</button></a>
+</button>
+    
+{% endblock %}

@@ -1,13 +1,13 @@
 from flask import Flask, render_template, url_for, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from wtforms.validators import ValidationError, DataRequired
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Length
 from random import choice
 from uuid import uuid4
 from var import *
+import sqlite3
 
 
 
@@ -20,7 +20,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 
 
-#class for bridge page
+#form when user gets the default bridge page
 class BridgeForm(FlaskForm):
     username = StringField(label=('What is your name?'),
         validators=[DataRequired(), 
@@ -31,6 +31,7 @@ class BridgeForm(FlaskForm):
         validators=[Length(max=30)])
     submit = SubmitField(label=('Submit'))
 
+#form when user gets the arthur bridge page
 class ArthurForm(FlaskForm):
     username = StringField(label=('What is your name?'),
         validators=[DataRequired(), 
@@ -49,6 +50,8 @@ class Entry(db.Model):
     content = db.Column(db.String(1000), nullable=True)
     color = db.Column(db.String(30))
     date_created = db.Column(db.DateTime, default=datetime.now)
+    sessionid = db.Column(db.String(400), nullable=True)
+    ip = db.Column(db.String(30), nullable=True)
 
     def __repr__(self):
         return '<quote %r>' % self.id
@@ -107,11 +110,11 @@ def bridgerobin():
 @app.route('/bridge/index', methods=['POST', 'GET'])
 def index():
 #when user submits quote
-    form = BridgeForm() 
+    form = BridgeForm()
+    ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr) 
     if "id" in session:
-        name = session["id"]
         if request.method == 'POST':
-            new_quote = Entry(content=request.form['content'], username=session["name"], quest=session["quest"], color=session["color"])
+            new_quote = Entry(content=request.form['content'], username=session["name"], quest=session["quest"], color=session["color"], sessionid=session["id"], ip=ip_addr)
 
             try:
                 db.session.add(new_quote)
@@ -122,14 +125,42 @@ def index():
     
     #when no submission
         elif request.method == 'GET':
-            quotes = Entry.query.order_by(Entry.date_created).all()
+            quotes = Entry.query.order_by(Entry.date_created.desc()).all()
             return render_template('index.html', quotes = quotes)
 
     else:
         return redirect('/halt')
+
 #delete quote
 @app.route('/bridge/index/delete/<int:id>')
 def delete(id):
+    # executing SQL syntax
+    # connecting to the database
+    connection = sqlite3.connect("test.db")
+    # cursor
+    crsr = connection.cursor() 
+    # SQL command to get the session id of the quote
+    sql_command = f"SELECT sessionid FROM entry WHERE id = {id};"
+    # execute the statement
+    crsr.execute(sql_command)
+    # store all the fetched data in the ans variable
+    ans = str(crsr.fetchall()[0])
+    ans = ans.strip("('")
+    ans = ans.rstrip("',)")
+    # close the connection
+    connection.close()
+    #End of SQL
+
+    #backdoor for admin rights to delete any post
+    admin = False
+    if session["name"] == "Zoot" and session["quest"] == "get a spanking" and session["color"] == "grey":
+        admin = True
+
+    #only can delete from the same session
+    if session["id"] != ans:
+        if admin == False:
+            return redirect('/whodidit')
+
     quote_to_delete = Entry.query.get_or_404(id)
 
     try:
@@ -142,6 +173,26 @@ def delete(id):
 #update quote
 @app.route('/bridge/index/update/<int:id>', methods=['POST', 'GET'])
 def update(id):
+    # executing SQL syntax
+    # connecting to the database
+    connection = sqlite3.connect("test.db")
+    # cursor
+    crsr = connection.cursor() 
+    # SQL command to get the session id of the quote
+    sql_command = f"SELECT sessionid FROM entry WHERE id = {id};"
+    # execute the statement
+    crsr.execute(sql_command)
+    # store all the fetched data in the ans variable
+    ans = str(crsr.fetchall()[0])
+    ans = ans.strip("('")
+    ans = ans.rstrip("',)")
+    # close the connection
+    connection.close()
+    #End of SQL
+
+    if session["id"] != ans:
+        return redirect('/whodidit')
+
     quote = Entry.query.get_or_404(id)
 
     if request.method == 'POST':
@@ -159,6 +210,10 @@ def update(id):
 @app.route('/halt', methods=['POST', 'GET'])    
 def halt():
         return render_template('halt.html')
+
+@app.route('/whodidit', methods=['POST', 'GET'])    
+def whodidit():
+        return render_template('whodidit.html')
 
 
 if __name__ == "__main__":
